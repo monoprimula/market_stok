@@ -5,10 +5,14 @@ import 'dotenv/config';
 import { connectDB } from './config/database.js';
 import process from 'process';
 
-// Rota Dosyalarını İçe Aktar
 import authRoutes from './routes/authRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import userRoutes from './routes/userRoutes.js'
+import productRoutes from './routes/productRoutes.js'
+import favoriteRoutes from './routes/favoriteRoutes.js';
+import orderRoutes from './routes/orderRoutes.js'
+import reportRoutes from './routes/reportRoutes.js'
+
 
 
 const app = express();
@@ -21,6 +25,11 @@ app.use(express.json());
 app.use('/api/auth', authRoutes); 
 app.use('/api/categories', categoryRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/favorites', favoriteRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/reports', reportRoutes);
+
 
 app.get('/', (req, res) => {
     res.send('Market Stok Takip API Çalışıyor 🚀');

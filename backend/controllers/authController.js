@@ -1,5 +1,4 @@
 import AuthService from '../services/authService.js';
-console.log("--- DEBUG: authController yüklendi ---");
 
 class AuthController {
 

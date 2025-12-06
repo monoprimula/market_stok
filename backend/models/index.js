@@ -10,6 +10,7 @@ import ProductSupplier from './ProductSupplier.js';
 import Order from './Order.js';
 import OrderDetail from './OrderDetail.js';
 import StockTransaction from './StockTransaction.js';
+import Favorite from './Favorite.js';
 
 // --- İLİŞKİ TANIMLARI (ASSOCIATIONS) ---
 
@@ -61,6 +62,12 @@ User.hasMany(StockTransaction, { foreignKey: 'user_id', as: 'transactions' });
 StockTransaction.belongsTo(User, { foreignKey: 'user_id', as: 'staff' });
 
 
+User.belongsToMany(Product, { through: Favorite, foreignKey: 'user_id',  as: 'favorite_products' });
+Product.belongsToMany(User, { through: Favorite, foreignKey: 'product_id', as: 'favorited_by' });
+
+Favorite.belongsTo(Product, { foreignKey: 'product_id' });
+Favorite.belongsTo(User, { foreignKey: 'user_id' });
+
 const db = {
     sequelize,
     Role,
@@ -71,7 +78,8 @@ const db = {
     ProductSupplier,
     Order,
     OrderDetail,
-    StockTransaction
+    StockTransaction,
+    Favorite,
 };
 
 export default db;

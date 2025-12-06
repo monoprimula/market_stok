@@ -8,7 +8,7 @@ class UserController {
             const users= await UserService.getAllUsers();
             res.status(200).json(users);
         }catch(error){
-            res.status(500).json({message:"Kullanıcı listesi alınamadı"});
+            res.status(500).json({message:"Kullanıcı listesi alınamadı" + error.message});
         }
     }
 
