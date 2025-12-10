@@ -5,8 +5,6 @@ import Role from './Role.js';
 import User from './User.js';
 import Category from './Category.js';
 import Product from './Product.js';
-import Supplier from './Supplier.js';
-import ProductSupplier from './ProductSupplier.js';
 import Order from './Order.js';
 import OrderDetail from './OrderDetail.js';
 import StockTransaction from './StockTransaction.js';
@@ -27,41 +25,28 @@ Product.belongsTo(Category, { foreignKey: 'category_id', as: 'category' });
 User.hasMany(Product, { foreignKey: 'created_by', as: 'added_products' });
 Product.belongsTo(User, { foreignKey: 'created_by', as: 'creator' });
 
-// 4. Ürün ve Tedarikçi (N-N Çoka-Çok İlişkisi)
-
-Product.belongsToMany(Supplier, { 
-    through: ProductSupplier, 
-    foreignKey: 'product_id', 
-    as: 'suppliers' 
-});
-Supplier.belongsToMany(Product, { 
-    through: ProductSupplier, 
-    foreignKey: 'supplier_id', 
-    as: 'products' 
-});
-
-// 5. Siparişler ve Kullanıcı (1-N)
+// 4. Siparişler ve Kullanıcı (1-N)
 User.hasMany(Order, { foreignKey: 'user_id', as: 'orders' });
 Order.belongsTo(User, { foreignKey: 'user_id', as: 'customer' });
 
-// 6. Sipariş ve Sipariş Detayları (1-N)
+// 5. Sipariş ve Sipariş Detayları (1-N)
 Order.hasMany(OrderDetail, { foreignKey: 'order_id', as: 'details' });
 OrderDetail.belongsTo(Order, { foreignKey: 'order_id', as: 'order' });
 
-// 7. Sipariş Detayı ve Ürün (1-N)
+// 6. Sipariş Detayı ve Ürün (1-N)
 // Sipariş detayı içindeki ürün bilgisine erişmek için.
 Product.hasMany(OrderDetail, { foreignKey: 'product_id', as: 'order_items' });
 OrderDetail.belongsTo(Product, { foreignKey: 'product_id', as: 'product' });
 
-// 8. Stok Hareketleri ve Ürün (1-N)
+// 7. Stok Hareketleri ve Ürün (1-N)
 Product.hasMany(StockTransaction, { foreignKey: 'product_id', as: 'movements' });
 StockTransaction.belongsTo(Product, { foreignKey: 'product_id', as: 'product' });
 
-// 9. Stok Hareketleri ve Personel (1-N)
+// 8. Stok Hareketleri ve Personel (1-N)
 User.hasMany(StockTransaction, { foreignKey: 'user_id', as: 'transactions' });
 StockTransaction.belongsTo(User, { foreignKey: 'user_id', as: 'staff' });
 
-
+//9. Kullanıcı ve Ürün Arasındaki İlişki (N-N)
 User.belongsToMany(Product, { through: Favorite, foreignKey: 'user_id',  as: 'favorite_products' });
 Product.belongsToMany(User, { through: Favorite, foreignKey: 'product_id', as: 'favorited_by' });
 
@@ -74,8 +59,6 @@ const db = {
     User,
     Category,
     Product,
-    Supplier,
-    ProductSupplier,
     Order,
     OrderDetail,
     StockTransaction,
