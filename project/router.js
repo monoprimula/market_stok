@@ -3,9 +3,11 @@ import { renderRegister } from './screens/register.js';
 import { renderAdminDashboard } from './screens/adminDashboard.js';
 import { renderStaffDashboard } from './screens/staffDashboard.js';
 import { renderUserDashboard } from './screens/userDashboard.js';
+import { renderHome } from './screens/home.js';
 import { authService } from './services/authService.js';
 
 const routes = {
+    '/home': renderHome,
     '/login': renderLogin,
     '/register': renderRegister,
     '/admin': renderAdminDashboard,
@@ -15,7 +17,7 @@ const routes = {
 
 export const router = {
     init(container) {
-        const hash = window.location.hash.slice(1) || '/login';
+        const hash = window.location.hash.slice(1) || '/home';
         const route = routes[hash];
 
         if (route) {
