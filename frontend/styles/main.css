@@ -4,6 +4,9 @@
     box-sizing: border-box;
 }
 
+/* Page-specific imports */
+@import 'home.css';
+
 :root {
     --primary-color: #2d5c3f;
     --secondary-color: #4a8b64;

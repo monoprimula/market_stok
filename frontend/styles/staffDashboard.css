@@ -1,0 +1,12 @@
+/* Staff dashboard specific styles */
+
+.dashboard-header h1 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.tab-header h2 {
+    color: var(--primary-color);
+}
+
+/* Add any staff-specific overrides here */

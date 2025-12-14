@@ -9,6 +9,13 @@ import { showToast } from '../components/toast.js';
 export function renderAdminDashboard(container) {
     const user = authService.getCurrentUser();
 
+    if (!document.querySelector('link[href="/styles/adminDashboard.css"]')) {
+        const l = document.createElement('link');
+        l.rel = 'stylesheet';
+        l.href = '/styles/adminDashboard.css';
+        document.head.appendChild(l);
+    }
+
     if (!user || user.role !== 'admin') {
         window.location.hash = '#/login';
         return;

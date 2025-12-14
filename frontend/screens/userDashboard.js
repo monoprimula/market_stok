@@ -9,6 +9,13 @@ import { showToast } from '../components/toast.js';
 export function renderUserDashboard(container) {
     const user = authService.getCurrentUser();
 
+    if (!document.querySelector('link[href="/styles/userDashboard.css"]')) {
+        const l = document.createElement('link');
+        l.rel = 'stylesheet';
+        l.href = '/styles/userDashboard.css';
+        document.head.appendChild(l);
+    }
+
     if (!user || user.role !== 'user') {
         window.location.hash = '#/login';
         return;
