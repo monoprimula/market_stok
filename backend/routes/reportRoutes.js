@@ -12,5 +12,6 @@ router.use(verifyToken, checkRole(['Admin']));
 router.get('/stats', ReportController.getStats);
 
 router.get('/export', ReportController.downloadGeneralReportCSV);
+router.get('/low-stock', ReportController.getLowStockProducts);
 
 export default router;

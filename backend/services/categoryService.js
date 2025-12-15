@@ -10,6 +10,16 @@ class CategoryService{
         });
     }
 
+    static async getCategoryById(id) {
+       
+        const category = await Category.findByPk(id); 
+        
+        if (!category) {
+            return null; 
+        }
+
+        return category;
+    }
     //kategori oluşturuma
     static async createCategory(data){
         const {name}=data;
@@ -29,33 +39,33 @@ class CategoryService{
 
     //kategori güncelleme
     static async updateCategory(id, data) {
-        const { name } = data;
+        const { name} = data;
         
-        const [updatedRows] = await Category.update(
-            { name }, 
-            { where: { id } }
-        );
+    
+        const category = await Category.findByPk(id); 
 
-        if (updatedRows === 0) {
-            throw new Error('Güncellenecek kategori bulunamadı.');
+        if (!category) {
+
+            throw new Error('Güncellenecek kategori bulunamadı.'); 
         }
 
-        const category = await Category.findByPk(id); 
+        // 2. Güncelleme
+        const updatedCategory = await category.update({ name }); 
+
         return { 
-            category, 
+            category: updatedCategory, 
             message: 'Kategori başarıyla güncellendi.' 
         };
     }
 
     //kategori silme
-    static async deleteCategory(id){
-        const category= Category.findByPk(id);
-
-        if(!category){
-            throw new Error('Kategori bulunamadı');
+    static async deleteCategory(id) {
+        const category = await Category.findByPk(id); 
+        if (!category) {
+            throw new Error("Kategori bulunamadı."); 
         }
-        (await category).destroy();
-        return {message:"Kategori başarıyla silindi"}
+        await category.destroy();
+        return { message: "Kategori başarıyla silindi." };
     }
 }
 

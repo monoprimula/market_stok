@@ -4,14 +4,15 @@
  */
 const checkRole = (allowedRoles) => {
     return (req, res, next) => {
-        // req.user objesi bir önceki (verifyToken) middleware'den geliyor
+    console.log('Kullanıcı Rolü:', req.user.role); 
+    console.log('İzin Verilen Roller:', allowedRoles);
         const userRole = req.user?.role;
         
         if (!userRole) {
             return res.status(401).json({ message: "Yetki bilgisi (Rol) bulunamadı." });
         }
 
-        // Kullanıcının rolü izin verilenler listesinde var mı
+       
         if (allowedRoles.includes(userRole)) {
             next(); 
         } else {

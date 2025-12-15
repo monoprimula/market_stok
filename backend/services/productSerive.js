@@ -4,7 +4,7 @@ import db from "../models/index.js";
 const { Product, Category, User } = db;
 
 class ProductService {
-  // 1. Yeni ürün ekleme (sadece admin ve staffta olacak)
+  // 1. Yeni ürün ekleme
   static async createProduct(data, userId) {
     const {
       barcode_no,
@@ -63,12 +63,17 @@ class ProductService {
 
   // 3. Personelin sadece kendi eklediği  ürünleri listelemesi
   static async getStaffProducts(userId) {
-    return await Product.findAll({
-      where: { created_by: userId },
-      include: [{ model: Category, as: "category" }],
-      order: [["created_at", "DESC"]],
-    });
-  }
+        return await Product.findAll({
+            where: {
+                created_by: userId
+            },
+            include: [
+                { model: Category, as: 'category', attributes: ['name'] },
+                { model: User, as: 'creator', attributes: ['username', 'id'] }
+            ],
+            order: [['created_at', 'DESC']]
+        });
+    }
 
   // 4. Silme
   static async deleteProduct(id) {

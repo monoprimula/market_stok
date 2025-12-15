@@ -12,6 +12,7 @@ import productRoutes from './routes/productRoutes.js'
 import favoriteRoutes from './routes/favoriteRoutes.js';
 import orderRoutes from './routes/orderRoutes.js'
 import reportRoutes from './routes/reportRoutes.js'
+import cartRoutes from './routes/cartRoutes.js';
 
 
 
@@ -29,6 +30,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/cart', cartRoutes);
 
 
 app.get('/', (req, res) => {

@@ -1,3 +1,5 @@
+// backend/routes/productRoutes.js
+
 import express from 'express';
 import verifyToken from '../middleware/auth.js';
 import checkRole from '../middleware/roleCheck.js';
@@ -11,6 +13,6 @@ router.get('/my-products', verifyToken, checkRole(['Admin', 'Staff']), ProductCo
 router.get('/:id', verifyToken, ProductController.getById);
 router.post('/', verifyToken, checkRole(['Admin', 'Staff']), ProductController.create);
 router.put('/:id', verifyToken, checkRole(['Admin', 'Staff']), ProductController.update);
-router.delete('/:id', verifyToken, checkRole(['Admin']), ProductController.delete);
+router.delete('/:id', verifyToken, checkRole(['Admin', 'Staff']), ProductController.delete);
 
 export default router;

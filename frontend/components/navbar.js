@@ -5,10 +5,11 @@ export function createNavbar(user) {
     nav.className = 'navbar';
 
     const roleNames = {
-        admin: 'Yönetici',
-        staff: 'Personel',
-        user: 'Kullanıcı'
+        Admin: 'Yönetici',
+        Staff: 'Personel',
+        User: 'Kullanıcı'
     };
+    
 
     nav.innerHTML = `
         <div class="navbar-container">
@@ -17,7 +18,7 @@ export function createNavbar(user) {
             </div>
             <div class="navbar-menu">
                 <span class="user-info">
-                    ${roleNames[user.role]} - ${user.email}
+                    ${roleNames[user.role]} - ${user.username}
                 </span>
                 <button class="btn btn-secondary" id="logoutBtn">Çıkış Yap</button>
             </div>

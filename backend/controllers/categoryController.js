@@ -12,6 +12,22 @@ class CategoryController {
     }
   }
 
+  static async getById(req, res) {
+    try {
+      const category = await CategoryService.getCategoryById(req.params.id);
+      
+      if (!category) {
+  
+        return res.status(404).json({ error: "Kategori bulunamadı." });
+      }
+
+      res.status(200).json(category);
+    } catch (error) {
+     
+      res.status(400).json({ error: error.message });
+    }
+  }
+
   //POST /api/categories
   static async create(req, res) {
     try {
@@ -28,7 +44,8 @@ class CategoryController {
         const result = await CategoryService.updateCategory(req.params.id, req.body);
         res.status(200).json(result);  
     }catch(error){
-        res.status(400).json({error: error.message});
+       const status = error.message.includes('bulunamadı') ? 404 : 400;
+        res.status(status).json({error: error.message});
     }
   }
 
@@ -38,7 +55,8 @@ class CategoryController {
         const result= await CategoryService.deleteCategory(req.params.id);
         res.status(200).json(result);
     }catch(error){
-        res.status(400).json({error: error.message});
+        const status = error.message.includes('bulunamadı') ? 404 : 400;
+        res.status(status).json({error: error.message});
     }
   }
 }

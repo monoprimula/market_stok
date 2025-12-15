@@ -46,6 +46,15 @@ class ReportController {
             res.status(500).json({ message: "Rapor oluşturulamadı: " + error.message });
         }
     }
+
+    static async getLowStockProducts(req, res) {
+        try {
+            const products = await ReportService.getLowStockProducts();
+            res.status(200).json(products);
+        } catch (error) {
+            res.status(500).json({ message: "Kritik stok listesi alınamadı: " + error.message });
+        }
+    }
 }
 
 export default ReportController;

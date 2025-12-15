@@ -4,7 +4,7 @@ import { renderAdminDashboard } from './screens/adminDashboard.js';
 import { renderStaffDashboard } from './screens/staffDashboard.js';
 import { renderUserDashboard } from './screens/userDashboard.js';
 import { renderHome } from './screens/home.js';
-import { authService } from './services/authService.js';
+
 
 const routes = {
     '/home': renderHome,
@@ -17,6 +17,16 @@ const routes = {
 
 export const router = {
     init(container) {
+        
+     
+        window.addEventListener('hashchange', () => {
+            router.loadRoute(container);
+        });
+        
+        router.loadRoute(container); 
+    },
+
+    loadRoute(container) {
         const hash = window.location.hash.slice(1) || '/home';
         const route = routes[hash];
 
@@ -27,8 +37,8 @@ export const router = {
             container.innerHTML = '<h1>404 - Sayfa Bulunamadı</h1>';
         }
     },
-
+    
     navigate(path) {
-        window.location.hash = `#${path}`;
+        window.location.hash = `#${path}`; 
     }
 };
