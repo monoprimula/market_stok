@@ -6,7 +6,7 @@ class OrderService {
 
     // Yeni Sipariş Oluşturma 
     static async createOrder(userId, items) {
-        const t = await sequelize.transaction(); // 🚨 Transaction Başlat
+        const t = await sequelize.transaction(); 
 
         try {
             let totalAmount = 0;
@@ -27,14 +27,14 @@ class OrderService {
                 totalAmount += item.quantity * product.price;
             }
 
-            // 2. Siparişi Kaydet (Orders Tablosu)
+            // Siparişi Kaydet (Orders Tablosu)
             const newOrder = await Order.create({
                 user_id: userId,
                 total_amount: totalAmount,
                 status: 'Confirmed'
             }, { transaction: t });
 
-            // 3. Sipariş Detaylarını Kaydet ve Stok Düş
+            //  Sipariş Detaylarını Kaydet ve Stok Düş
             for (const item of items) {
                 const subtotal = item.quantity * item.price;
                 
@@ -64,11 +64,11 @@ class OrderService {
                 }, { transaction: t });
             }
 
-            await t.commit(); // 🚨 Her şey başarılı: Kalıcı hale getir
+            await t.commit(); // 
             return { order: newOrder, message: 'Siparişiniz başarıyla onaylandı ve stok düşüldü.' };
 
         } catch (error) {
-            await t.rollback(); // 🚨 Hata oldu: Başlangıç durumuna geri dön (Rollback)
+            await t.rollback(); //
             throw error;
         }
     }

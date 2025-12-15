@@ -36,7 +36,7 @@ class ReportController {
             
             const csv = json2csvParser.parse(data);
 
-            // 4. Dosyayı İndir
+            //  Dosyayı İndir
             res.header('Content-Type', 'text/csv');
             res.attachment('genel_durum_raporu.csv');
             

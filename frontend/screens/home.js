@@ -495,7 +495,7 @@ export function renderHome(container) {
     </footer>
     `;
 
-    // Ripple effect
+
     container.querySelectorAll('.btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
             const ripple = document.createElement('span');
@@ -521,14 +521,14 @@ export function renderHome(container) {
         });
     });
 
-    // Navigation
+
     container.querySelectorAll('.btn-primary').forEach(btn => {
         btn.addEventListener('click', () => {
             window.location.hash = '#/login';
         });
     });
 
-    // Scroll animations
+
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -100px 0px'

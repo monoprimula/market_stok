@@ -76,9 +76,9 @@ function renderTabContent(container, tabName) {
   }
 }
 
-// adminDashboard.js
 
-// adminDashboard.js (Yeni renderProductsTab)
+
+
 
 async function renderProductsTab(container, user) {
   let products = [];
@@ -221,7 +221,7 @@ async function renderProductsTab(container, user) {
           (p) => String(p.id) === btn.dataset.delete
         );
 
-        // ... (Silme onayı ve API çağrısı mantığı aynı kalır) ...
+      
         if (!product) {
           showToast("Silinecek ürün listede bulunamadı.", "error");
           return;
@@ -283,7 +283,7 @@ async function showProductForm(productId, user) {
         loadError = error.response?.data?.error || 'Veriler yüklenirken bir hata oluştu.';
         showToast(loadError, 'error');
         console.error('Ürün Formu Veri Yükleme Hatası:', error);
-        if (productId) return; // Düzenlemede veri çekilemezse formu açma
+        if (productId) return; 
     }
 
     const modal = document.createElement('div');
@@ -382,10 +382,10 @@ async function showProductForm(productId, user) {
             barcode_no: rawData.barcode_no ? rawData.barcode_no.trim() : null, 
             description: rawData.description ? rawData.description.trim() : null,
             
-            // 🌟 image_url'yi dataToSend objesine ekle
+           
             image_url: rawData.image_url ? rawData.image_url.trim() : null,
 
-            // Tip Dönüşümü: Float ve Int
+            
             price: parseFloat(rawData.price),
             category_id: parseInt(rawData.category_id),
             stock_quantity: parseInt(rawData.stock_quantity), 
@@ -540,7 +540,7 @@ async function renderCategoriesTab(container, user) {
       });
     });
 
-    // Düzenleme İşlemi (Edit)
+    // Düzenleme İşlemi
     tbody.querySelectorAll("[data-edit]").forEach((btn) => {
       btn.addEventListener("click", () =>
         showCategoryForm(btn.dataset.edit, user)
@@ -558,7 +558,7 @@ async function showCategoryForm(categoryId, user) {
   let category = null;
   if (categoryId) {
     try {
-      category = await categoryService.getCategoryById(categoryId); // ✅ API Çağrısı
+      category = await categoryService.getCategoryById(categoryId); 
     } catch (error) {
       showToast("Kategori verisi yüklenemedi.", "error");
       return;

@@ -107,7 +107,7 @@ async function renderMyProductsTab(container, user) {
 
   const searchInput = wrapper.querySelector("#searchInput");
   const categoryFilter = wrapper.querySelector("#categoryFilter");
-  const tbody = wrapper.querySelector("#productsTableBody"); // 👈 tbody tanımı buraya eklendi
+  const tbody = wrapper.querySelector("#productsTableBody"); 
 
   function updateProductsTable() {
     const searchQuery = searchInput.value;
@@ -334,7 +334,7 @@ async function showProductForm(productId, user) {
   const product = productId
     ? await productService.getProductById(productId)
     : null;
-  const categories = await categoryService.getCategories(); //
+  const categories = await categoryService.getCategories();
 
   const modal = document.createElement("div");
   modal.className = "modal";
@@ -432,7 +432,7 @@ async function showProductForm(productId, user) {
 
     const dataToSend = {
       name: rawData.name ? rawData.name.trim() : null,
-      // 🌟 image_url'yi dataToSend objesine ekle
+     
       image_url: rawData.image_url ? rawData.image_url.trim() : null,
       description: rawData.description ? rawData.description.trim() : null,
       price: parseFloat(rawData.price),

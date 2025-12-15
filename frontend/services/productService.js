@@ -80,7 +80,7 @@ async getProductsByCreator() {
         }
     },
     
-    // Yeni: Kritik Stoktaki Ürünleri Çekme
+    // Kritik Stoktaki Ürünleri Çekme
     async getLowStockProducts() {
         try {
             const response = await api.get('/reports/low-stock'); 

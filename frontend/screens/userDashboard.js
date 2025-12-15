@@ -95,7 +95,7 @@ if (user && !user.name) {
     }
   };
 
-  // 5. Ürünleri Listele
+  //  Ürünleri Listele
   const renderProducts = async () => {
     loadingMessage.style.display = "block";
     productList.innerHTML = "";
@@ -145,7 +145,7 @@ if (user && !user.name) {
             favoriteIds.includes(product.id) ||
             favoriteIds.includes(Number(product.id));
 
-          // 🌟 GÖRSEL İÇİN URL TANIMI
+        
           const imageUrl = product.image_url || 'assets/placeholder-product.png'; 
 
           return `
@@ -477,28 +477,40 @@ if (user && !user.name) {
 
   // --- Sepet Modalı ---
   async function showCart() {
-    const cartItems = await cartService.getCart();
-
-    const cart = cartItems
-      .map((item) => {
-        const productInfo  = item.product;
-        if (!productInfo) return null;
-        return {
-          ...item,
-         productId: item.productId || item.product_id || item.id, // En güvenli yol
-        product: productInfo,
-        };
-      })
-      .filter((item) => item.product);
-
-    const total = cart.reduce(
-      (sum, item) => sum + item.product.price * item.quantity,
-      0
-    );
-
+    
     const modal = document.createElement("div");
     modal.className = "modal";
-    modal.innerHTML = `
+    document.body.appendChild(modal);
+
+    const closeModal = () => {
+      modal.remove();
+    
+      updateCounts();
+    };
+    
+    
+    const updateCartDisplay = async () => {
+        const cartItems = await cartService.getCart();
+
+        const cart = cartItems
+            .map((item) => {
+                const productInfo  = item.product;
+                if (!productInfo) return null;
+                return {
+                    ...item,
+                    productId: item.productId || item.product_id || item.id, 
+                    product: productInfo,
+                };
+            })
+            .filter((item) => item.product);
+
+        const total = cart.reduce(
+            (sum, item) => sum + item.product.price * item.quantity,
+            0
+        );
+
+        // Modal içeriği (HTML)
+        modal.innerHTML = `
             <div class="modal-overlay"></div>
             <div class="modal-content modal-large">
                 <div class="modal-header">
@@ -533,7 +545,7 @@ if (user && !user.name) {
                                         }" 
                                             ${
                                               item.quantity >=
-                                              item.product.stock
+                                              item.product.stock_quantity
                                                 ? "disabled"
                                                 : ""
                                             }>+</button>
@@ -572,132 +584,119 @@ if (user && !user.name) {
                 </div>
             </div>
         `;
-    document.body.appendChild(modal);
 
-    const closeModal = () => {
-      modal.remove();
-      updateCounts();
+        
+        modal.querySelector(".modal-close").addEventListener("click", closeModal);
+        modal.querySelector(".modal-overlay").addEventListener("click", closeModal);
+        modal.querySelector("#closeBtn").addEventListener("click", closeModal);
+
+        if (cart.length > 0) {
+            
+            modal.querySelector("#clearCartBtn").addEventListener("click", async () => {
+                const result = await cartService.clearCart();
+                if (result.success) {
+                    showToast("Sepet temizlendi", "info");
+                    updateCounts();
+                    updateCartDisplay(); 
+                } else {
+                    showToast(result.message, "error");
+                }
+            });
+
+            // Sepeti Onayla
+            modal.querySelector("#confirmCartBtn").addEventListener("click", async () => {
+                const result = await cartService.confirmCart();
+                if (result.success) {
+                    showToast(result.message, "success");
+                    closeModal(); 
+                    renderProducts(); 
+                } else {
+                    showToast(result.message, "error");
+                    if (result.partialSuccess) {
+                        updateCartDisplay(); 
+                    }
+                }
+            });
+            
+            // Miktar Artır
+            modal.querySelectorAll("[data-increase]").forEach((btn) => {
+                btn.addEventListener("click", async () => {
+                    const productId = btn.dataset.increase;
+                    const item = cart.find((i) => i.productId == productId);
+                    
+                    if (!item) {
+                        showToast("Ürün sepetinizden kaldırılmış. Sepet güncelleniyor.", "warning");
+                        updateCounts();
+                        updateCartDisplay();
+                        return;
+                    }
+                    
+                    const result = await cartService.updateQuantity(
+                        productId,
+                        item.quantity + 1
+                    );
+                    if (result.success) {
+                        updateCounts();
+                        updateCartDisplay(); 
+                    } else {
+                        showToast(result.message, "error");
+                    }
+                });
+            });
+
+            // Miktar Azalt
+            modal.querySelectorAll("[data-decrease]").forEach((btn) => {
+                btn.addEventListener("click", async () => {
+                    const productId = btn.dataset.decrease;
+                    const item = cart.find((i) => i.productId == productId);
+                    
+                    if (!item) {
+                        showToast("Ürün sepetinizden kaldırılmış. Sepet güncelleniyor.", "warning");
+                        updateCounts();
+                        updateCartDisplay();
+                        return;
+                    }
+
+                    if (item.quantity > 1) {
+                        const result = await cartService.updateQuantity(
+                            productId,
+                            item.quantity - 1
+                        );
+                        if (result.success) {
+                            updateCounts();
+                            updateCartDisplay(); 
+                        }
+                    } else {
+                        // Miktar 1 ise Silme işlemini yap
+                        const result = await cartService.removeFromCart(productId);
+                        if (result.success) {
+                            showToast("Ürün sepetten çıkarıldı", "info");
+                            updateCounts();
+                            updateCartDisplay(); 
+                        }
+                    }
+                });
+            });
+
+            // Ürün Sil
+            modal.querySelectorAll("[data-remove]").forEach((btn) => {
+                btn.addEventListener("click", async () => {
+                    const productId = btn.dataset.remove;
+                    
+                    const result = await cartService.removeFromCart(productId);
+                    if (result.success) {
+                        showToast("Ürün sepetten çıkarıldı", "info");
+                        updateCounts();
+                        updateCartDisplay(); 
+                    }
+                });
+            });
+        }
     };
 
-    modal.querySelector(".modal-close").addEventListener("click", closeModal);
-    modal.querySelector(".modal-overlay").addEventListener("click", closeModal);
-    modal.querySelector("#closeBtn").addEventListener("click", closeModal);
-
-    if (cart.length > 0) {
-      // Sepeti Temizle
-      modal
-        .querySelector("#clearCartBtn")
-        .addEventListener("click", async () => {
-       
-          const result = await cartService.clearCart();
-          if (result.success) {
-            showToast("Sepet temizlendi", "info");
-            closeModal();
-            showCart();
-          } else {
-            showToast(result.message, "error");
-          }
-        });
-
-      // Sepeti Onayla
-      modal
-        .querySelector("#confirmCartBtn")
-        .addEventListener("click", async () => {
-        
-          const result = await cartService.confirmCart();
-          if (result.success) {
-            showToast(result.message, "success");
-            closeModal();
-            updateCounts();
-            renderProducts();
-          } else {
-            showToast(result.message, "error");
-            if (result.partialSuccess) {
-              closeModal();
-              showCart();
-            }
-          }
-        });
-    }
-
    
-    // Miktar Artır
-modal.querySelectorAll("[data-increase]").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-        const productId = btn.dataset.increase;
-        const item = cart.find((i) => i.productId == productId);
-
-     
-        if (!item) {
-            showToast("Ürün sepetinizden kaldırılmış. Sepet güncelleniyor.", "warning");
-            closeModal();
-            showCart(); 
-            return; 
-        }
-      
-        const result = await cartService.updateQuantity(
-          productId,
-          item.quantity + 1
-        );
-        if (result.success) {
-          closeModal();
-          showCart();
-        } else {
-          showToast(result.message, "error");
-        }
-    });
-});
-
-// Miktar Azalt
-modal.querySelectorAll("[data-decrease]").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-        const productId = btn.dataset.decrease;
-        const item = cart.find((i) => i.productId == productId);
-        
-        
-        if (!item) {
-            showToast("Ürün sepetinizden kaldırılmış. Sepet güncelleniyor.", "warning");
-            closeModal();
-            showCart(); 
-            return; 
-        }
-
-        if (item.quantity > 1) {
-         
-          const result = await cartService.updateQuantity(
-            productId,
-            item.quantity - 1
-          );
-          if (result.success) {
-            closeModal();
-            showCart();
-          }
-        } else {
-          
-          const result = await cartService.removeFromCart(productId);
-          if (result.success) {
-            showToast("Ürün sepetten çıkarıldı", "info");
-            closeModal();
-            showCart();
-          }
-        }
-    });
-});
-
-   // Ürün Sil
-    modal.querySelectorAll("[data-remove]").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const productId = btn.dataset.remove;
-      
-        const result = await cartService.removeFromCart(productId);
-        if (result.success) {
-          showToast("Ürün sepetten çıkarıldı", "info");
-          closeModal();
-          showCart();
-        }
-      });
-    });
-  }
+    await updateCartDisplay();
+}
 
   searchInput.addEventListener("input", () => {
     renderProducts();

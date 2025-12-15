@@ -4,7 +4,7 @@ import db from "../models/index.js";
 const { Product, Category, User } = db;
 
 class ProductService {
-  // 1. Yeni ürün ekleme
+  //  Yeni ürün ekleme
   static async createProduct(data, userId) {
     const {
       barcode_no,
@@ -35,7 +35,7 @@ class ProductService {
     return newProduct;
   }
 
-  // 2. Tüm Ürünleri Listeleme (Arama ve Filtreleme)
+  //  Tüm Ürünleri Listeleme (Arama ve Filtreleme)
   static async getAllProducts(query) {
     const { search, category_id } = query;
     const where = {};
@@ -61,7 +61,7 @@ class ProductService {
     });
   }
 
-  // 3. Personelin sadece kendi eklediği  ürünleri listelemesi
+  //  Personelin sadece kendi eklediği  ürünleri listelemesi
   static async getStaffProducts(userId) {
         return await Product.findAll({
             where: {
@@ -75,7 +75,7 @@ class ProductService {
         });
     }
 
-  // 4. Silme
+  //  Silme
   static async deleteProduct(id) {
     const product = await Product.findByPk(id);
     if (!product) throw new Error("Ürün bulunamadı.");
@@ -83,7 +83,7 @@ class ProductService {
     return { message: "Ürün başarıyla silindi." };
   }
 
-  // 5. Güncelleme
+  //  Güncelleme
   static async updateProduct(id, data) {
     const product = await Product.findByPk(id);
     if (!product) throw new Error("Ürün bulunamadı.");
@@ -92,7 +92,7 @@ class ProductService {
     await product.update(data);
     return product;
   }
-  // 6.Idsine göre ürün bulma
+  // Idsine göre ürün bulma
   static async getProductById(id) {
     const product = await Product.findByPk(id, {
       include: [

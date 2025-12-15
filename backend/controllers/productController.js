@@ -5,7 +5,7 @@ class ProductController {
     // POST /api/products (Ürün Ekle)
     static async create(req, res) {
         try {
-            // req.user.id auth middleware'den geliyor (Ekleyen kişi)
+            
             const product = await ProductService.createProduct(req.body, req.user.id);
             res.status(201).json({ message: "Ürün eklendi.", product });
         } catch (error) {
@@ -16,7 +16,7 @@ class ProductController {
     // GET /api/products (Tümünü Listele)
     static async getAll(req, res) {
         try {
-            // req.query içinde ?search=kalem&category_id=2 gibi veriler gelir
+           
             const products = await ProductService.getAllProducts(req.query);
             res.status(200).json(products);
         } catch (error) {
@@ -24,7 +24,7 @@ class ProductController {
         }
     }
 
-    // GET /api/products/my-products (Sadece Personelin Ekledikleri)
+    // GET /api/products/my-products 
     static async getMyProducts(req, res) {
         try {
             const products = await ProductService.getStaffProducts(req.user.id);
