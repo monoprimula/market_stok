@@ -1,0 +1,18 @@
+/* User dashboard specific styles */
+
+.dashboard-header h1 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.product-card h3 {
+    font-size: 1.05rem;
+}
+
+.favorite-btn {
+    transition: transform 0.15s ease;
+}
+
+.favorite-btn:hover { transform: scale(1.05); }
+
+/* Add any user-specific overrides here */
