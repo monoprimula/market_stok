@@ -16,6 +16,7 @@ import cartRoutes from './routes/cartRoutes.js';
 
 
 
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -31,6 +32,7 @@ app.use('/api/favorites', favoriteRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/cart', cartRoutes);
+
 
 
 app.get('/', (req, res) => {

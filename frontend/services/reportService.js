@@ -57,10 +57,15 @@ export const reportService = {
                 responseType: 'blob'
             });
             
-            return response; 
+            return response.data; 
         } catch (error) {
-            console.error('Genel rapor indirilirken hata:', error);
+            if (error.response && error.response.data instanceof Blob) {
+
+            const errorText = await error.response.data.text();
+            throw new Error(JSON.parse(errorText).error || 'API Rapor Hatası.');
+            } else {    
             throw error;
         }
     }
+},
 };

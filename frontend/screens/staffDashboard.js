@@ -175,15 +175,15 @@ async function renderMyProductsTab(container, user) {
         .join("") ||
       '<tr><td colspan="6" class="text-center">Henüz ürün eklemediniz</td></tr>';
 
-    tbody.querySelectorAll("[data-edit]").forEach((btn) => {
+   tbody.querySelectorAll("[data-edit]").forEach((btn) => {
       btn.addEventListener("click", () =>
-        showProductForm(btn.dataset.edit, user)
+        showProductForm(btn.dataset.edit, user, 'myproducts')
       );
     });
 
     tbody.querySelectorAll("[data-stock]").forEach((btn) => {
       btn.addEventListener("click", () =>
-        showStockUpdateForm(btn.dataset.stock, user)
+        showStockUpdateForm(btn.dataset.stock, user, 'myproducts')
       );
     });
   }
@@ -192,8 +192,8 @@ async function renderMyProductsTab(container, user) {
   categoryFilter.addEventListener("change", updateProductsTable);
 
   wrapper
-    .querySelector("#addProductBtn")
-    .addEventListener("click", () => showProductForm(null, user));
+      .querySelector("#addProductBtn")
+      .addEventListener("click", () => showProductForm(null, user, 'myproducts'));
 
   updateProductsTable();
 }
@@ -313,13 +313,14 @@ async function renderAllProductsTab(container, user) {
     // Event Listener'lar
     tbody.querySelectorAll("[data-edit]").forEach((btn) => {
       btn.addEventListener("click", () =>
-        showProductForm(btn.dataset.edit, user)
+        showProductForm(btn.dataset.edit, user, 'allproducts')
       );
     });
 
     tbody.querySelectorAll("[data-stock]").forEach((btn) => {
       btn.addEventListener("click", () =>
-        showStockUpdateForm(btn.dataset.stock, user)
+
+        showStockUpdateForm(btn.dataset.stock, user, 'allproducts')
       );
     });
   }

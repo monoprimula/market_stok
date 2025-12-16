@@ -850,9 +850,14 @@ async function renderReportsTab(container) {
             try {
          
                 const blob = await reportService.downloadGeneralReport(); 
+                console.log('API’den Gelen Veri Tipi:', typeof blob, blob instanceof Blob);
                 
-                
-               
+               if (!(blob instanceof Blob)) {
+            // Eğer Blob değilse (Muhtemelen bir JSON objesi veya string), işlemi durdur
+            console.error('Hata: API geçerli bir Blob nesnesi döndürmedi.', blob);
+            showToast('Rapor verisi Blob formatında alınamadı. Yetkiyi veya API çıktısını kontrol edin.', 'error');
+            return; // İşlemi burada kes
+        }
                 const url = window.URL.createObjectURL(blob);
                 
    
