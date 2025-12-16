@@ -9,7 +9,7 @@ class UserService{
             attributes: {exclude: ['password_hash']},
             include: [{ 
                 model: Role,
-                as: 'role'   
+                as: 'role' 
             }]
         });
     }

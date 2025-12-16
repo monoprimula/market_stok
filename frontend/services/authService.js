@@ -68,7 +68,7 @@ export const authService = {
    async updateUserRole(userId, newRoleId) { 
         try {
             const dataToSend = { role_id: newRoleId }; 
-            return await api.put(`/users/${userId}/role`, dataToSend); 
+        return await api.put(`/users/${userId}/role`, dataToSend); 
         } catch (error) {
             console.error(`Kullanıcı rolü güncellenirken hata (${userId}):`, error);
             throw error;

@@ -691,46 +691,69 @@ async function renderUsersTab(container) {
             const formattedDate = (u.createdAt && new Date(u.createdAt) instanceof Date && !isNaN(new Date(u.createdAt)))
                 ? new Date(u.createdAt).toLocaleDateString('tr-TR')
                 : '-'; 
+               const userRole = u.role?.role_name || 'User';
                 
             return `
-                <tr>
-                    <td><strong>${u.username}</strong> ${u.id === currentUser.id ? '<span class="badge badge-info">Siz</span>' : ''}</td>
-                    <td>${u.email}</td>
-                    <td>
-                    <select class="role-select" data-user-id="${u.id}" ${u.id === currentUser.id ? 'disabled' : ''}>
-                        <option value="1" ${u.role === 'Admin' ? 'selected' : ''}>Yönetici</option>
-                        <option value="2" ${u.role === 'Staff' ? 'selected' : ''}>Personel</option>
-                        <option value="3" ${u.role === 'User' ? 'selected' : ''}>Kullanıcı</option>
-                    </select>
-                </td>
-                    <td>${formattedDate}</td>
-                    <td>
-                        ${u.id !== currentUser.id ? `<button class="btn btn-sm btn-danger" data-delete="${u.id}">Sil</button>` : '-'}
-                    </td>
-                </tr>
-            `;
-        }).join('');
+        <tr>
+            <td><strong>${u.username}</strong> ${u.id === currentUser.id ? '<span class="badge badge-info">Siz</span>' : ''}</td>
+            <td>${u.email}</td>
+            <td>
+            <select class="role-select" data-user-id="${u.id}" ${u.id === currentUser.id ? 'disabled' : ''}>
+                <option value="1" ${userRole === 'Admin' ? 'selected' : ''}>Yönetici</option>
+                <option value="2" ${userRole === 'Staff' ? 'selected' : ''}>Personel</option>
+                <option value="3" ${userRole === 'User' ? 'selected' : ''}>Kullanıcı</option>
+            </select>
+        </td>
+            <td>${formattedDate}</td>
+            <td>
+                ${u.id !== currentUser.id ? `<button class="btn btn-sm btn-danger" data-delete="${u.id}">Sil</button>` : '-'}
+            </td>
+        </tr>
+    `;
+}).join('');
 
         //  Rol Güncelleme İşlemi
-        tbody.querySelectorAll('.role-select').forEach(select => {
-            select.addEventListener('change', async (e) => {
-                const userId = e.target.dataset.userId;
-               
-                const newRoleId = parseInt(e.target.value); 
-                const userToUpdate = currentUsers.find(u => String(u.id) === userId);
-                try {
-                   await authService.updateUserRole(userId, newRoleId);
-                    logService.add('Kullanıcı Rolü Güncellendi', `${userToUpdate.email} -> ${newRoleId}`, currentUser.id, currentUser.role);
-                    showToast('Kullanıcı rolü başarıyla güncellendi', 'success');
-                } catch (error) {
-                    const errorMessage = error.response?.data?.error || 'Rol güncellenirken hata oluştu.';
-                    showToast(errorMessage, 'error');
-                    e.target.value = userToUpdate.role; 
-                    console.error('Rol Güncelleme Hatası:', error);
-                }
-            });
-        });
+       tbody.querySelectorAll('.role-select').forEach(select => {
+    select.addEventListener('change', async (e) => {
+        const userId = e.target.dataset.userId;
+        const newRoleId = parseInt(e.target.value); 
+        
+  
+        let newRoleName;
+        
+        if (newRoleId === 1) newRoleName = 'Admin';
+        else if (newRoleId === 2) newRoleName = 'Staff';
+        else if (newRoleId === 3) newRoleName = 'User';
+        else {
+            showToast('Geçersiz rol seçimi.', 'error');
+            return;
+        }
 
+        const userToUpdate = currentUsers.find(u => String(u.id) === userId);
+        
+        try {
+            
+            await authService.updateUserRole(userId, newRoleId); 
+            
+            
+            logService.add('Kullanıcı Rolü Güncellendi', `${userToUpdate.email} -> ${newRoleName}`, currentUser.id, currentUser.role);
+            
+            showToast(`Kullanıcı rolü başarıyla ${newRoleName} olarak güncellendi.`, 'success');
+         
+     
+            updateUsersTable(); 
+            
+        } catch (error) {
+            const errorMessage = error.response?.data?.error || 'Rol güncellenirken sunucu hatası.';
+            showToast(errorMessage, 'error');
+            
+          
+            updateUsersTable(); 
+
+            console.error('Rol Güncelleme Hatası:', error);
+        }
+    });
+});
         //  Kullanıcı Silme İşlemi
         tbody.querySelectorAll('[data-delete]').forEach(btn => {
             btn.addEventListener('click', () => {
